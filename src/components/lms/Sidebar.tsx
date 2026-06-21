@@ -10,7 +10,7 @@ import {
   HiOutlineUsers,
   HiOutlineScale,
   HiOutlineSun,
-  HiOutlineCoffee,
+  HiOutlineClock,
   HiOutlineUserRemove,
   HiOutlineDownload,
 } from "react-icons/hi";
@@ -42,7 +42,7 @@ const HR_TOOLS: NavItem[] = [
   { name: "Add Employee", path: "/add-employee", icon: HiOutlineUserAdd },
   { name: "Add Leave Balance", path: "/add-leave-balance", icon: HiOutlineScale },
   { name: "Add Holiday", path: "/add-holiday", icon: HiOutlineSun },
-  { name: "Weekly Off", path: "/weekly-off", icon: HiOutlineCoffee },
+  { name: "Weekly Off", path: "/weekly-off", icon: HiOutlineClock },
 ];
 const HEADHR_TOOLS: NavItem[] = [
   { name: "Employee Requests", path: "/employee-requests", icon: HiOutlineUsers },
