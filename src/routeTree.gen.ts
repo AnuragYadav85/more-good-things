@@ -9,38 +9,288 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as ForgotPasswordRouteImport } from './routes/forgot-password'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedWeeklyOffRouteImport } from './routes/_authenticated.weekly-off'
+import { Route as AuthenticatedSubmitComplaintRouteImport } from './routes/_authenticated.submit-complaint'
+import { Route as AuthenticatedRemovalRequestsRouteImport } from './routes/_authenticated.removal-requests'
+import { Route as AuthenticatedLeaveHistoryRouteImport } from './routes/_authenticated.leave-history'
+import { Route as AuthenticatedLeaveBalanceRequestsRouteImport } from './routes/_authenticated.leave-balance-requests'
+import { Route as AuthenticatedEmployeeRequestsRouteImport } from './routes/_authenticated.employee-requests'
+import { Route as AuthenticatedDownloadReportsRouteImport } from './routes/_authenticated.download-reports'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
+import { Route as AuthenticatedComplaintHistoryRouteImport } from './routes/_authenticated.complaint-history'
+import { Route as AuthenticatedApproveLeaveRouteImport } from './routes/_authenticated.approve-leave'
+import { Route as AuthenticatedApplyLeaveRouteImport } from './routes/_authenticated.apply-leave'
+import { Route as AuthenticatedAddLeaveBalanceRouteImport } from './routes/_authenticated.add-leave-balance'
+import { Route as AuthenticatedAddHolidayRouteImport } from './routes/_authenticated.add-holiday'
+import { Route as AuthenticatedAddEmployeeRouteImport } from './routes/_authenticated.add-employee'
+import { Route as AuthenticatedActionComplaintsRouteImport } from './routes/_authenticated.action-complaints'
 
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ForgotPasswordRoute = ForgotPasswordRouteImport.update({
+  id: '/forgot-password',
+  path: '/forgot-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedWeeklyOffRoute = AuthenticatedWeeklyOffRouteImport.update({
+  id: '/weekly-off',
+  path: '/weekly-off',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedSubmitComplaintRoute =
+  AuthenticatedSubmitComplaintRouteImport.update({
+    id: '/submit-complaint',
+    path: '/submit-complaint',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRemovalRequestsRoute =
+  AuthenticatedRemovalRequestsRouteImport.update({
+    id: '/removal-requests',
+    path: '/removal-requests',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedLeaveHistoryRoute =
+  AuthenticatedLeaveHistoryRouteImport.update({
+    id: '/leave-history',
+    path: '/leave-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedLeaveBalanceRequestsRoute =
+  AuthenticatedLeaveBalanceRequestsRouteImport.update({
+    id: '/leave-balance-requests',
+    path: '/leave-balance-requests',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEmployeeRequestsRoute =
+  AuthenticatedEmployeeRequestsRouteImport.update({
+    id: '/employee-requests',
+    path: '/employee-requests',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDownloadReportsRoute =
+  AuthenticatedDownloadReportsRouteImport.update({
+    id: '/download-reports',
+    path: '/download-reports',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedComplaintHistoryRoute =
+  AuthenticatedComplaintHistoryRouteImport.update({
+    id: '/complaint-history',
+    path: '/complaint-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedApproveLeaveRoute =
+  AuthenticatedApproveLeaveRouteImport.update({
+    id: '/approve-leave',
+    path: '/approve-leave',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedApplyLeaveRoute = AuthenticatedApplyLeaveRouteImport.update({
+  id: '/apply-leave',
+  path: '/apply-leave',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAddLeaveBalanceRoute =
+  AuthenticatedAddLeaveBalanceRouteImport.update({
+    id: '/add-leave-balance',
+    path: '/add-leave-balance',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedAddHolidayRoute = AuthenticatedAddHolidayRouteImport.update({
+  id: '/add-holiday',
+  path: '/add-holiday',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAddEmployeeRoute =
+  AuthenticatedAddEmployeeRouteImport.update({
+    id: '/add-employee',
+    path: '/add-employee',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedActionComplaintsRoute =
+  AuthenticatedActionComplaintsRouteImport.update({
+    id: '/action-complaints',
+    path: '/action-complaints',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/action-complaints': typeof AuthenticatedActionComplaintsRoute
+  '/add-employee': typeof AuthenticatedAddEmployeeRoute
+  '/add-holiday': typeof AuthenticatedAddHolidayRoute
+  '/add-leave-balance': typeof AuthenticatedAddLeaveBalanceRoute
+  '/apply-leave': typeof AuthenticatedApplyLeaveRoute
+  '/approve-leave': typeof AuthenticatedApproveLeaveRoute
+  '/complaint-history': typeof AuthenticatedComplaintHistoryRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/download-reports': typeof AuthenticatedDownloadReportsRoute
+  '/employee-requests': typeof AuthenticatedEmployeeRequestsRoute
+  '/leave-balance-requests': typeof AuthenticatedLeaveBalanceRequestsRoute
+  '/leave-history': typeof AuthenticatedLeaveHistoryRoute
+  '/removal-requests': typeof AuthenticatedRemovalRequestsRoute
+  '/submit-complaint': typeof AuthenticatedSubmitComplaintRoute
+  '/weekly-off': typeof AuthenticatedWeeklyOffRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/action-complaints': typeof AuthenticatedActionComplaintsRoute
+  '/add-employee': typeof AuthenticatedAddEmployeeRoute
+  '/add-holiday': typeof AuthenticatedAddHolidayRoute
+  '/add-leave-balance': typeof AuthenticatedAddLeaveBalanceRoute
+  '/apply-leave': typeof AuthenticatedApplyLeaveRoute
+  '/approve-leave': typeof AuthenticatedApproveLeaveRoute
+  '/complaint-history': typeof AuthenticatedComplaintHistoryRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/download-reports': typeof AuthenticatedDownloadReportsRoute
+  '/employee-requests': typeof AuthenticatedEmployeeRequestsRoute
+  '/leave-balance-requests': typeof AuthenticatedLeaveBalanceRequestsRoute
+  '/leave-history': typeof AuthenticatedLeaveHistoryRoute
+  '/removal-requests': typeof AuthenticatedRemovalRequestsRoute
+  '/submit-complaint': typeof AuthenticatedSubmitComplaintRoute
+  '/weekly-off': typeof AuthenticatedWeeklyOffRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/forgot-password': typeof ForgotPasswordRoute
+  '/login': typeof LoginRoute
+  '/_authenticated/action-complaints': typeof AuthenticatedActionComplaintsRoute
+  '/_authenticated/add-employee': typeof AuthenticatedAddEmployeeRoute
+  '/_authenticated/add-holiday': typeof AuthenticatedAddHolidayRoute
+  '/_authenticated/add-leave-balance': typeof AuthenticatedAddLeaveBalanceRoute
+  '/_authenticated/apply-leave': typeof AuthenticatedApplyLeaveRoute
+  '/_authenticated/approve-leave': typeof AuthenticatedApproveLeaveRoute
+  '/_authenticated/complaint-history': typeof AuthenticatedComplaintHistoryRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/download-reports': typeof AuthenticatedDownloadReportsRoute
+  '/_authenticated/employee-requests': typeof AuthenticatedEmployeeRequestsRoute
+  '/_authenticated/leave-balance-requests': typeof AuthenticatedLeaveBalanceRequestsRoute
+  '/_authenticated/leave-history': typeof AuthenticatedLeaveHistoryRoute
+  '/_authenticated/removal-requests': typeof AuthenticatedRemovalRequestsRoute
+  '/_authenticated/submit-complaint': typeof AuthenticatedSubmitComplaintRoute
+  '/_authenticated/weekly-off': typeof AuthenticatedWeeklyOffRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/action-complaints'
+    | '/add-employee'
+    | '/add-holiday'
+    | '/add-leave-balance'
+    | '/apply-leave'
+    | '/approve-leave'
+    | '/complaint-history'
+    | '/dashboard'
+    | '/download-reports'
+    | '/employee-requests'
+    | '/leave-balance-requests'
+    | '/leave-history'
+    | '/removal-requests'
+    | '/submit-complaint'
+    | '/weekly-off'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/forgot-password'
+    | '/login'
+    | '/action-complaints'
+    | '/add-employee'
+    | '/add-holiday'
+    | '/add-leave-balance'
+    | '/apply-leave'
+    | '/approve-leave'
+    | '/complaint-history'
+    | '/dashboard'
+    | '/download-reports'
+    | '/employee-requests'
+    | '/leave-balance-requests'
+    | '/leave-history'
+    | '/removal-requests'
+    | '/submit-complaint'
+    | '/weekly-off'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/forgot-password'
+    | '/login'
+    | '/_authenticated/action-complaints'
+    | '/_authenticated/add-employee'
+    | '/_authenticated/add-holiday'
+    | '/_authenticated/add-leave-balance'
+    | '/_authenticated/apply-leave'
+    | '/_authenticated/approve-leave'
+    | '/_authenticated/complaint-history'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/download-reports'
+    | '/_authenticated/employee-requests'
+    | '/_authenticated/leave-balance-requests'
+    | '/_authenticated/leave-history'
+    | '/_authenticated/removal-requests'
+    | '/_authenticated/submit-complaint'
+    | '/_authenticated/weekly-off'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  ForgotPasswordRoute: typeof ForgotPasswordRoute
+  LoginRoute: typeof LoginRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/forgot-password': {
+      id: '/forgot-password'
+      path: '/forgot-password'
+      fullPath: '/forgot-password'
+      preLoaderRoute: typeof ForgotPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +298,161 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/weekly-off': {
+      id: '/_authenticated/weekly-off'
+      path: '/weekly-off'
+      fullPath: '/weekly-off'
+      preLoaderRoute: typeof AuthenticatedWeeklyOffRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/submit-complaint': {
+      id: '/_authenticated/submit-complaint'
+      path: '/submit-complaint'
+      fullPath: '/submit-complaint'
+      preLoaderRoute: typeof AuthenticatedSubmitComplaintRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/removal-requests': {
+      id: '/_authenticated/removal-requests'
+      path: '/removal-requests'
+      fullPath: '/removal-requests'
+      preLoaderRoute: typeof AuthenticatedRemovalRequestsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/leave-history': {
+      id: '/_authenticated/leave-history'
+      path: '/leave-history'
+      fullPath: '/leave-history'
+      preLoaderRoute: typeof AuthenticatedLeaveHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/leave-balance-requests': {
+      id: '/_authenticated/leave-balance-requests'
+      path: '/leave-balance-requests'
+      fullPath: '/leave-balance-requests'
+      preLoaderRoute: typeof AuthenticatedLeaveBalanceRequestsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/employee-requests': {
+      id: '/_authenticated/employee-requests'
+      path: '/employee-requests'
+      fullPath: '/employee-requests'
+      preLoaderRoute: typeof AuthenticatedEmployeeRequestsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/download-reports': {
+      id: '/_authenticated/download-reports'
+      path: '/download-reports'
+      fullPath: '/download-reports'
+      preLoaderRoute: typeof AuthenticatedDownloadReportsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/complaint-history': {
+      id: '/_authenticated/complaint-history'
+      path: '/complaint-history'
+      fullPath: '/complaint-history'
+      preLoaderRoute: typeof AuthenticatedComplaintHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/approve-leave': {
+      id: '/_authenticated/approve-leave'
+      path: '/approve-leave'
+      fullPath: '/approve-leave'
+      preLoaderRoute: typeof AuthenticatedApproveLeaveRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/apply-leave': {
+      id: '/_authenticated/apply-leave'
+      path: '/apply-leave'
+      fullPath: '/apply-leave'
+      preLoaderRoute: typeof AuthenticatedApplyLeaveRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-leave-balance': {
+      id: '/_authenticated/add-leave-balance'
+      path: '/add-leave-balance'
+      fullPath: '/add-leave-balance'
+      preLoaderRoute: typeof AuthenticatedAddLeaveBalanceRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-holiday': {
+      id: '/_authenticated/add-holiday'
+      path: '/add-holiday'
+      fullPath: '/add-holiday'
+      preLoaderRoute: typeof AuthenticatedAddHolidayRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-employee': {
+      id: '/_authenticated/add-employee'
+      path: '/add-employee'
+      fullPath: '/add-employee'
+      preLoaderRoute: typeof AuthenticatedAddEmployeeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/action-complaints': {
+      id: '/_authenticated/action-complaints'
+      path: '/action-complaints'
+      fullPath: '/action-complaints'
+      preLoaderRoute: typeof AuthenticatedActionComplaintsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
+interface AuthenticatedRouteChildren {
+  AuthenticatedActionComplaintsRoute: typeof AuthenticatedActionComplaintsRoute
+  AuthenticatedAddEmployeeRoute: typeof AuthenticatedAddEmployeeRoute
+  AuthenticatedAddHolidayRoute: typeof AuthenticatedAddHolidayRoute
+  AuthenticatedAddLeaveBalanceRoute: typeof AuthenticatedAddLeaveBalanceRoute
+  AuthenticatedApplyLeaveRoute: typeof AuthenticatedApplyLeaveRoute
+  AuthenticatedApproveLeaveRoute: typeof AuthenticatedApproveLeaveRoute
+  AuthenticatedComplaintHistoryRoute: typeof AuthenticatedComplaintHistoryRoute
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedDownloadReportsRoute: typeof AuthenticatedDownloadReportsRoute
+  AuthenticatedEmployeeRequestsRoute: typeof AuthenticatedEmployeeRequestsRoute
+  AuthenticatedLeaveBalanceRequestsRoute: typeof AuthenticatedLeaveBalanceRequestsRoute
+  AuthenticatedLeaveHistoryRoute: typeof AuthenticatedLeaveHistoryRoute
+  AuthenticatedRemovalRequestsRoute: typeof AuthenticatedRemovalRequestsRoute
+  AuthenticatedSubmitComplaintRoute: typeof AuthenticatedSubmitComplaintRoute
+  AuthenticatedWeeklyOffRoute: typeof AuthenticatedWeeklyOffRoute
+}
+
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedActionComplaintsRoute: AuthenticatedActionComplaintsRoute,
+  AuthenticatedAddEmployeeRoute: AuthenticatedAddEmployeeRoute,
+  AuthenticatedAddHolidayRoute: AuthenticatedAddHolidayRoute,
+  AuthenticatedAddLeaveBalanceRoute: AuthenticatedAddLeaveBalanceRoute,
+  AuthenticatedApplyLeaveRoute: AuthenticatedApplyLeaveRoute,
+  AuthenticatedApproveLeaveRoute: AuthenticatedApproveLeaveRoute,
+  AuthenticatedComplaintHistoryRoute: AuthenticatedComplaintHistoryRoute,
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedDownloadReportsRoute: AuthenticatedDownloadReportsRoute,
+  AuthenticatedEmployeeRequestsRoute: AuthenticatedEmployeeRequestsRoute,
+  AuthenticatedLeaveBalanceRequestsRoute:
+    AuthenticatedLeaveBalanceRequestsRoute,
+  AuthenticatedLeaveHistoryRoute: AuthenticatedLeaveHistoryRoute,
+  AuthenticatedRemovalRequestsRoute: AuthenticatedRemovalRequestsRoute,
+  AuthenticatedSubmitComplaintRoute: AuthenticatedSubmitComplaintRoute,
+  AuthenticatedWeeklyOffRoute: AuthenticatedWeeklyOffRoute,
+}
+
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  ForgotPasswordRoute: ForgotPasswordRoute,
+  LoginRoute: LoginRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
