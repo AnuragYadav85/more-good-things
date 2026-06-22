@@ -22,6 +22,7 @@ import { Route as AuthenticatedEmployeeRequestsRouteImport } from './routes/_aut
 import { Route as AuthenticatedDownloadReportsRouteImport } from './routes/_authenticated.download-reports'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedComplaintHistoryRouteImport } from './routes/_authenticated.complaint-history'
+import { Route as AuthenticatedAttendanceHistoryRouteImport } from './routes/_authenticated.attendance-history'
 import { Route as AuthenticatedApproveLeaveRouteImport } from './routes/_authenticated.approve-leave'
 import { Route as AuthenticatedApplyLeaveRouteImport } from './routes/_authenticated.apply-leave'
 import { Route as AuthenticatedAddLeaveBalanceRouteImport } from './routes/_authenticated.add-leave-balance'
@@ -100,6 +101,12 @@ const AuthenticatedComplaintHistoryRoute =
     path: '/complaint-history',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAttendanceHistoryRoute =
+  AuthenticatedAttendanceHistoryRouteImport.update({
+    id: '/attendance-history',
+    path: '/attendance-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedApproveLeaveRoute =
   AuthenticatedApproveLeaveRouteImport.update({
     id: '/approve-leave',
@@ -145,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/add-leave-balance': typeof AuthenticatedAddLeaveBalanceRoute
   '/apply-leave': typeof AuthenticatedApplyLeaveRoute
   '/approve-leave': typeof AuthenticatedApproveLeaveRoute
+  '/attendance-history': typeof AuthenticatedAttendanceHistoryRoute
   '/complaint-history': typeof AuthenticatedComplaintHistoryRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/download-reports': typeof AuthenticatedDownloadReportsRoute
@@ -165,6 +173,7 @@ export interface FileRoutesByTo {
   '/add-leave-balance': typeof AuthenticatedAddLeaveBalanceRoute
   '/apply-leave': typeof AuthenticatedApplyLeaveRoute
   '/approve-leave': typeof AuthenticatedApproveLeaveRoute
+  '/attendance-history': typeof AuthenticatedAttendanceHistoryRoute
   '/complaint-history': typeof AuthenticatedComplaintHistoryRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/download-reports': typeof AuthenticatedDownloadReportsRoute
@@ -187,6 +196,7 @@ export interface FileRoutesById {
   '/_authenticated/add-leave-balance': typeof AuthenticatedAddLeaveBalanceRoute
   '/_authenticated/apply-leave': typeof AuthenticatedApplyLeaveRoute
   '/_authenticated/approve-leave': typeof AuthenticatedApproveLeaveRoute
+  '/_authenticated/attendance-history': typeof AuthenticatedAttendanceHistoryRoute
   '/_authenticated/complaint-history': typeof AuthenticatedComplaintHistoryRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/download-reports': typeof AuthenticatedDownloadReportsRoute
@@ -209,6 +219,7 @@ export interface FileRouteTypes {
     | '/add-leave-balance'
     | '/apply-leave'
     | '/approve-leave'
+    | '/attendance-history'
     | '/complaint-history'
     | '/dashboard'
     | '/download-reports'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/add-leave-balance'
     | '/apply-leave'
     | '/approve-leave'
+    | '/attendance-history'
     | '/complaint-history'
     | '/dashboard'
     | '/download-reports'
@@ -250,6 +262,7 @@ export interface FileRouteTypes {
     | '/_authenticated/add-leave-balance'
     | '/_authenticated/apply-leave'
     | '/_authenticated/approve-leave'
+    | '/_authenticated/attendance-history'
     | '/_authenticated/complaint-history'
     | '/_authenticated/dashboard'
     | '/_authenticated/download-reports'
@@ -361,6 +374,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedComplaintHistoryRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/attendance-history': {
+      id: '/_authenticated/attendance-history'
+      path: '/attendance-history'
+      fullPath: '/attendance-history'
+      preLoaderRoute: typeof AuthenticatedAttendanceHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/approve-leave': {
       id: '/_authenticated/approve-leave'
       path: '/approve-leave'
@@ -413,6 +433,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedAddLeaveBalanceRoute: typeof AuthenticatedAddLeaveBalanceRoute
   AuthenticatedApplyLeaveRoute: typeof AuthenticatedApplyLeaveRoute
   AuthenticatedApproveLeaveRoute: typeof AuthenticatedApproveLeaveRoute
+  AuthenticatedAttendanceHistoryRoute: typeof AuthenticatedAttendanceHistoryRoute
   AuthenticatedComplaintHistoryRoute: typeof AuthenticatedComplaintHistoryRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDownloadReportsRoute: typeof AuthenticatedDownloadReportsRoute
@@ -431,6 +452,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedAddLeaveBalanceRoute: AuthenticatedAddLeaveBalanceRoute,
   AuthenticatedApplyLeaveRoute: AuthenticatedApplyLeaveRoute,
   AuthenticatedApproveLeaveRoute: AuthenticatedApproveLeaveRoute,
+  AuthenticatedAttendanceHistoryRoute: AuthenticatedAttendanceHistoryRoute,
   AuthenticatedComplaintHistoryRoute: AuthenticatedComplaintHistoryRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDownloadReportsRoute: AuthenticatedDownloadReportsRoute,

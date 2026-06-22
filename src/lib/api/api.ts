@@ -18,6 +18,10 @@ export const applyLeave = (formData: FormData) =>
   });
 export const getLeaveHistory = () => axiosInstance.get("/api/leave-history");
 
+/* ATTENDANCE */
+export const getAttendanceHistory = (week: number = 0) =>
+  axiosInstance.get(`/api/attendance-history?week=${week}`);
+
 /* COMPLAINTS */
 export const submitComplaint = (formData: FormData) =>
   axiosInstance.post("/api/submit_complaint", formData);
