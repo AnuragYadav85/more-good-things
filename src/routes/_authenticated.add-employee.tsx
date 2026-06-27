@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import {createFileRoute, useNavigate,} from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { addEmployeeRequest } from "@/lib/api/api";
@@ -10,6 +10,7 @@ export const Route = createFileRoute("/_authenticated/add-employee")({
 
 function AddEmployeePage() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "", name: "", surname: "", designation: "", department: "", join_date: "",
   });
@@ -27,10 +28,14 @@ function AddEmployeePage() {
     setLoading(true);
     try {
       const res = await addEmployeeRequest(formData);
-      toast.success(res?.data?.message || "Employee request submitted");
-      setFormData({ email: "", name: "", surname: "", designation: "", department: "", join_date: "" });
+      await navigate({
+        to: "/employee-request-history",
+        search: {
+          message: res?.data?.message,
+        },
+      });
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to submit request");
+      toast.error(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }

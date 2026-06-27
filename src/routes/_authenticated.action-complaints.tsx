@@ -43,10 +43,10 @@ function ActionComplaintsPage() {
     setRemark("");
   };
 
-  const submitAction = async (action: "resolve_complaint" | "reject_complaint") => {
+  const submitAction = async (action: "Resolved" | "Rejected") => {
     if (!selected) return;
     if (!remark.trim()) {
-      toast.error(action === "resolve_complaint" ? "Action Taken is required" : "Rejection Reason is required");
+      toast.error(action === "Resolved" ? "Action Taken is required" : "Rejection Reason is required");
       return;
     }
     setSubmitting(true);
@@ -65,13 +65,23 @@ function ActionComplaintsPage() {
   };
 
   const handleResolveClick = () => {
-    if (mode !== "resolve") { setMode("resolve"); setRemark(""); return; }
-    submitAction("resolve_complaint");
+    if (mode !== "resolve") {
+      setMode("resolve");
+      setRemark("");
+      return;
+    }
+
+    submitAction("Resolved");
   };
 
   const handleRejectClick = () => {
-    if (mode !== "reject") { setMode("reject"); setRemark(""); return; }
-    submitAction("reject_complaint");
+    if (mode !== "reject") {
+      setMode("reject");
+      setRemark("");
+      return;
+    }
+
+    submitAction("Rejected");
   };
 
   if (loading) return <LoadingSpinner text="Loading complaints..." />;

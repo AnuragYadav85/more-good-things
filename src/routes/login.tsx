@@ -7,7 +7,7 @@ import {
   HiOutlineEye,
   HiOutlineEyeOff,
 } from "react-icons/hi";
-import { loginUser } from "@/lib/api/api";
+import { getDashboard, loginUser } from "@/lib/api/api";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/login")({
@@ -46,7 +46,7 @@ function LoginPage() {
       const res = await loginUser(formData);
       const { email: userEmail, designation } = res.data || {};
       login({ email: userEmail || email, designation: designation || "Employee" });
-      toast.success("Login successful");
+      await getDashboard();
       navigate({ to: "/dashboard" });
     } catch (err: any) {
       toast.error(

@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { submitComplaint } from "@/lib/api/api";
+import { useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_authenticated/submit-complaint")({
   head: () => ({ meta: [{ title: "Submit Complaint — LMS" }] }),
@@ -11,7 +12,8 @@ export const Route = createFileRoute("/_authenticated/submit-complaint")({
 function SubmitComplaintPage() {
   const [formData, setFormData] = useState({ complaint_type: "", description: "" });
   const [loading, setLoading] = useState(false);
-
+  
+  const navigate = useNavigate();
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
@@ -27,8 +29,12 @@ function SubmitComplaintPage() {
       fd.append("complaint_type", formData.complaint_type);
       fd.append("description", formData.description);
       const res = await submitComplaint(fd);
-      toast.success(res?.data?.message || "Complaint submitted successfully");
-      setFormData({ complaint_type: "", description: "" });
+      await navigate({
+        to: "/complaint-history",
+        search: {
+          message: res?.data?.message,
+        },
+      });
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Failed to submit complaint");
     } finally {

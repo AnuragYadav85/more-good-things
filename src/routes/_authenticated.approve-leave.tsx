@@ -40,7 +40,7 @@ function ApproveLeavePage() {
     if (!selectedLeave) return;
     setSubmitting(true);
     try {
-      const res = await leaveAction(selectedLeave.leave_id, "Approved");
+      const res = await leaveAction(selectedLeave.leave_id, "approve_leave");
       toast.success(res.data?.message || "Leave approved");
       setSelectedLeave(null);
       await loadPending(false);
@@ -65,7 +65,7 @@ function ApproveLeavePage() {
     try {
       const fd = new FormData();
       fd.append("reason", rejectReason.trim());
-      const res = await leaveAction(selectedLeave.leave_id, "Rejected", fd);
+      const res = await leaveAction(selectedLeave.leave_id, "reject_leave", fd);
       toast.success(res.data?.message || "Leave rejected");
       setSelectedLeave(null);
       setShowRejectReason(false);

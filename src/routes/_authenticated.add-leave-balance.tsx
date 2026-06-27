@@ -27,11 +27,12 @@ function AddLeaveBalancePage() {
         to_email: formData.email,
         leave_type: formData.leave_type,
         days: Number(formData.leave_count),
+        remark: formData.remark,
       });
-      toast.success(res?.data?.message || "Leave balance request submitted");
-      setFormData({ email: "", leave_type: "", leave_count: "", remark: "" });
+      toast.success(res?.data?.message);
+      navigate({to: "/leave-balance-history", search: { message: res.data.message,},});
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to submit request");
+      toast.error(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }

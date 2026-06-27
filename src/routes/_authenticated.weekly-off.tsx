@@ -1,3 +1,4 @@
+import { addWeeklyOff } from "@/lib/api/api";
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -7,28 +8,28 @@ export const Route = createFileRoute("/_authenticated/weekly-off")({
   component: WeeklyOffPage,
 });
 
-const WEEKLY_OFFS = [
-  { day: "Sunday", department: "All" },
-  { day: "Saturday", department: "Support" },
-];
-
 function WeeklyOffPage() {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({ week_day: "", department: "" });
+  const [formData, setFormData] = useState({ email: "", weekly_off_type: "",});
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) =>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => 
     setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.week_day) { toast.error("Please select a day"); return; }
+    if (!formData.email || !formData.weekly_off_type) { toast.error("Please provide employee email and weekly off type");
+      return;
+    }
     setLoading(true);
     try {
-      await new Promise((r) => setTimeout(r, 400));
-      toast.success("Weekly off added successfully");
-      setFormData({ week_day: "", department: "" });
-    } catch {
-      toast.error("Failed to add weekly off");
+      const fd = new FormData();
+      fd.append("email", formData.email);
+      fd.append("weekly_off_type", formData.weekly_off_type);
+      const res = await addWeeklyOff(fd);
+      toast.success(res?.data?.message);
+      setFormData({ email: "", weekly_off_type: "" });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }
@@ -38,40 +39,34 @@ function WeeklyOffPage() {
     <div className="form-page">
       <div className="form-card">
         <h1>Weekly Off Management</h1>
+
         <form onSubmit={handleSubmit}>
-          <div className="form-row">
-            <div className="form-group">
-              <label>Week Day *</label>
-              <select name="week_day" value={formData.week_day} onChange={handleChange}>
-                <option value="">Select day</option>
-                {["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"].map((d) => (
-                  <option key={d} value={d}>{d}</option>
-                ))}
-              </select>
-            </div>
-            <div className="form-group">
-              <label>Department</label>
-              <input type="text" name="department" placeholder="All departments" value={formData.department} onChange={handleChange} />
-            </div>
+          <div className="form-group">
+            <label>Employee Emails *</label>
+            <textarea
+              rows={3}
+              name="email"
+              placeholder="employee1@gmail.com, employee2@gmail.com"
+              value={formData.email}
+              onChange={handleChange}
+            />
           </div>
+
+          <div className="form-group">
+            <label>Weekly Off Type *</label>
+            <select name="weekly_off_type" value={formData.weekly_off_type} onChange={handleChange}>
+              <option value="">Select Weekly Off</option>
+              <option value="0">Saturday + Sunday (Type 0)</option>
+              <option value="1">Saturday + Sunday (Type 1)</option>
+              <option value="2">Tuesday + Wednesday (Type 0)</option>
+              <option value="3">Tuesday + Wednesday (Type 1)</option>
+            </select>
+          </div>
+
           <button type="submit" className="primary-btn" disabled={loading}>
             {loading ? "Saving..." : "Add Weekly Off"}
           </button>
         </form>
-      </div>
-
-      <div className="table-card" style={{ marginTop: "1.5rem" }}>
-        <div className="table-header"><h2>Configured Weekly Offs</h2></div>
-        <div className="table-container">
-          <table>
-            <thead><tr><th>Day</th><th>Department</th></tr></thead>
-            <tbody>
-              {WEEKLY_OFFS.map((item, i) => (
-                <tr key={i}><td>{item.day}</td><td>{item.department}</td></tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
     </div>
   );

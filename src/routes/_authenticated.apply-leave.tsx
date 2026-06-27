@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import toast from "react-hot-toast";
 import { applyLeave } from "@/lib/api/api";
 
@@ -10,6 +11,7 @@ export const Route = createFileRoute("/_authenticated/apply-leave")({
 
 function ApplyLeavePage() {
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     leave_type: "",
     apply_start_date: "",
@@ -41,9 +43,13 @@ function ApplyLeavePage() {
       fd.append("reason", formData.reason);
       if (formData.supporting_documents) fd.append("supporting_documents", formData.supporting_documents);
       const res = await applyLeave(fd);
-      toast.success(res?.data?.message || "Leave applied successfully");
-      setFormData({ leave_type: "", apply_start_date: "", apply_end_date: "", reason: "", supporting_documents: null });
-      e.currentTarget.reset();
+
+      await navigate({
+        to: "/leave-history",
+        search: {
+          message: res?.data?.message,
+        },
+      });
     } catch (err: any) {
       toast.error(err?.response?.data?.message || "Failed to apply leave");
     } finally {

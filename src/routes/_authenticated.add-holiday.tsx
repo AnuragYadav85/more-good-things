@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { addHoliday } from "@/lib/api/api";
 
 export const Route = createFileRoute("/_authenticated/add-holiday")({
   head: () => ({ meta: [{ title: "Add Holiday — LMS" }] }),
@@ -22,12 +23,11 @@ function AddHolidayPage() {
     }
     setLoading(true);
     try {
-      // (No backend endpoint provided — UI-only stub matches your original implementation.)
-      await new Promise((r) => setTimeout(r, 400));
-      toast.success("Holiday added successfully");
-      setFormData({ holiday_name: "", holiday_date: "", description: "" });
-    } catch {
-      toast.error("Failed to add holiday");
+      const res = await addHoliday(formData);
+      toast.success(res?.data?.message);
+      setFormData({ holiday_name: "", holiday_date: "", description: "", });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message);
     } finally {
       setLoading(false);
     }

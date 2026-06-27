@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -83,9 +83,9 @@ function DashboardPage() {
       { label: "Complaint History", to: "/complaint-history" },
       { label: "Action Complaints", to: "/action-complaints" },
       { label: "Add Employee", to: "/add-employee" },
-      { label: "Employee Request History", to: "/employee-requests" },
+      { label: "Employee Request History", to: "/employee-request-history" },
       { label: "Leave Balance Requests", to: "/leave-balance-requests" },
-      { label: "Leave Balance History", to: "/add-leave-balance" },
+      { label: "Leave Balance History", to: "/leave-balance-history" },
       { label: "Add Holiday", to: "/add-holiday" },
       { label: "Self Report", to: "/download-reports" },
     ],
@@ -96,8 +96,8 @@ function DashboardPage() {
       { label: "Submit Complaint", to: "/submit-complaint" },
       { label: "Complaint History", to: "/complaint-history" },
       { label: "Employee Requests Approval", to: "/employee-requests" },
-      { label: "Remove Employee", to: "/removal-requests" },
-      { label: "Remove Employee Request History", to: "/removal-requests" },
+      { label: "Remove Employee", to: "/remove-employee" },
+      { label: "Remove Employee Request History", to: "/remove-employee-history" },
       { label: "Add Leave Balance", to: "/add-leave-balance" },
       { label: "Weekly Off Management", to: "/weekly-off" },
       { label: "Self Report", to: "/download-reports" },
@@ -109,30 +109,26 @@ function DashboardPage() {
       { label: "Submit Complaint", to: "/submit-complaint" },
       { label: "Complaint History", to: "/complaint-history" },
       { label: "Action Complaints", to: "/action-complaints" },
-      { label: "Remove Employee Requests Approval", to: "/removal-requests" },
+      { label: "Remove Employee Requests Approval", to: "/remove-employee-requests" },
       { label: "Download Reports", to: "/download-reports" },
       { label: "Self Report", to: "/download-reports" },
     ],
   };
   const quickActions = quickActionsByRole[designation] || [];
 
-  const stats = data?.stats || data?.statistics || {};
-  const statCards = [
-    { key: "pending_leaves", label: "Pending Leave Requests", roles: ["Admin", "HR"] },
-    { key: "pending_complaints", label: "Pending Complaints", roles: ["Admin", "HR", "Director"] },
-    { key: "employee_requests", label: "Employee Requests", roles: ["HR", "HeadHR"] },
-    { key: "leave_balance_requests", label: "Leave Balance Requests", roles: ["HR", "HeadHR"] },
-    { key: "removal_requests", label: "Removal Requests", roles: ["HeadHR", "Director"] },
-  ].filter((s) => s.roles.includes(designation) && stats[s.key] !== undefined);
-
   return (
     <div className="dashboard-page">
       <div className="dashboard-header">
         <div>
-          <h1>Welcome back</h1>
+          <h1>Welcome Back</h1>
           <p>{user.email}</p>
         </div>
-        {user.designation && <div className="role-badge">{user.designation}</div>}
+
+        {user.designation && (
+          <div className="role-badge">
+            {user.designation}
+          </div>
+        )}
       </div>
 
       <div className="dashboard-cards">
@@ -143,34 +139,6 @@ function DashboardPage() {
           </div>
         ))}
       </div>
-
-      {quickActions.length > 0 && (
-        <>
-          <div className="dashboard-header">
-            <div>
-              <h1>Quick Actions</h1>
-            </div>
-          </div>
-          <div className="dashboard-cards">
-            {quickActions.map((a) => (
-              <Link key={a.label} to={a.to} className="dashboard-card" style={{ textDecoration: "none" }}>
-                <h4>{a.label}</h4>
-              </Link>
-            ))}
-          </div>
-        </>
-      )}
-
-      {statCards.length > 0 && (
-        <div className="dashboard-cards">
-          {statCards.map((s) => (
-            <div key={s.key} className="dashboard-card">
-              <h4>{s.label}</h4>
-              <h2>{stats[s.key] ?? 0}</h2>
-            </div>
-          ))}
-        </div>
-      )}
 
       <div className="dashboard-chart-card">
         <div className="chart-header">
