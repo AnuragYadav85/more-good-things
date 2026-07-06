@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { addLeaveBalanceRequest } from "@/lib/api/api";
@@ -9,6 +9,7 @@ export const Route = createFileRoute("/_authenticated/add-leave-balance")({
 });
 
 function AddLeaveBalancePage() {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({ email: "", leave_type: "", leave_count: "", remark: "" });
 
