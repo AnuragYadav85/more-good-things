@@ -7,7 +7,7 @@ import {
   HiOutlineEye,
   HiOutlineEyeOff,
 } from "react-icons/hi";
-import { getDashboard, loginUser } from "@/lib/api/api";
+import { loginUser } from "@/lib/api/api";
 import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/login")({
@@ -38,22 +38,34 @@ function LoginPage() {
       toast.error("Please fill in all fields");
       return;
     }
+    if (loading) return;
     setLoading(true);
     try {
       const formData = new FormData();
       formData.append("email", email);
       formData.append("password", password);
       const res = await loginUser(formData);
-      const { email: userEmail, designation } = res.data || {};
-      login({ email: userEmail || email, designation: designation || "Employee" });
-      await getDashboard();
-      navigate({ to: "/dashboard" });
+      const data = res.data || {};
+      if (data.success) {
+        const u = data.user || {};
+        login({
+          email: u.email || email,
+          designation: u.designation || "Employee",
+        });
+        navigate({ to: data.redirect || "/dashboard" });
+      } else {
+        toast.error(data.message || "Invalid email or password");
+      }
     } catch (err: any) {
-      toast.error(
-        err?.response?.data?.message ||
-          err?.response?.data?.detail ||
-          "Invalid email or password",
-      );
+      if (err?.response) {
+        toast.error(
+          err.response.data?.message ||
+            err.response.data?.detail ||
+            "Invalid email or password",
+        );
+      } else {
+        toast.error("Unable to connect to server. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
