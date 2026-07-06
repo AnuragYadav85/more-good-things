@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -7,7 +7,7 @@ import {
   HiOutlineKey,
   HiOutlineArrowLeft,
 } from "react-icons/hi";
-import { sendOtp, forgotPassword } from "@/lib/api/api";
+import { sendOtp, changePassword } from "@/lib/api/api";
 
 export const Route = createFileRoute("/forgot-password")({
   head: () => ({
@@ -20,28 +20,47 @@ export const Route = createFileRoute("/forgot-password")({
 });
 
 function ForgotPasswordPage() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+
+  const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+
+  const showApiError = (err: any, fallback: string) => {
+    if (err?.response) {
+      toast.error(err.response.data?.message || err.response.data?.detail || fallback);
+    } else {
+      toast.error("Unable to connect to server. Please try again.");
+    }
+  };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim()) {
-      toast.error("Please enter your email");
+    if (loading) return;
+    if (!email.trim() || !isValidEmail(email.trim())) {
+      toast.error("Please enter a valid email");
       return;
     }
     setLoading(true);
     try {
       const fd = new FormData();
-      fd.append("email", email);
+      fd.append("email", email.trim());
       const res = await sendOtp(fd);
-      toast.success(res?.data?.message || "OTP sent");
-      setStep(2);
+      const data = res?.data || {};
+      if (data.success === false) {
+        toast.error(data.message || "Failed to send OTP");
+      } else {
+        toast.success(data.message || "OTP sent");
+        setOtpSent(true);
+        setStep(2);
+      }
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to send OTP");
+      showApiError(err, "Failed to send OTP");
     } finally {
       setLoading(false);
     }
@@ -49,6 +68,7 @@ function ForgotPasswordPage() {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     if (!otp.trim() || !newPassword.trim() || !confirmPassword.trim()) {
       toast.error("Please fill all fields");
       return;
@@ -60,15 +80,25 @@ function ForgotPasswordPage() {
     setLoading(true);
     try {
       const fd = new FormData();
-      fd.append("email", email);
-      fd.append("sms", otp);
-      fd.append("new_password", newPassword);
+      fd.append("email", email.trim());
+      fd.append("otp", otp.trim());
+      fd.append("password", newPassword);
       fd.append("confirm_password", confirmPassword);
-      const res = await forgotPassword(fd);
-      toast.success(res?.data?.message || "Password updated");
-      setStep(3);
+      const res = await changePassword(fd);
+      const data = res?.data || {};
+      if (data.success === false) {
+        toast.error(data.message || "Failed to update password");
+      } else {
+        toast.success(data.message || "Password updated");
+        setEmail("");
+        setOtp("");
+        setNewPassword("");
+        setConfirmPassword("");
+        setOtpSent(false);
+        navigate({ to: data.redirect || "/login" });
+      }
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to update password");
+      showApiError(err, "Failed to update password");
     } finally {
       setLoading(false);
     }
