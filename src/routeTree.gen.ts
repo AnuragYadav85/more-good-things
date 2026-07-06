@@ -15,10 +15,14 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedWeeklyOffRouteImport } from './routes/_authenticated.weekly-off'
 import { Route as AuthenticatedSubmitComplaintRouteImport } from './routes/_authenticated.submit-complaint'
+import { Route as AuthenticatedRemoveEmployeeHistoryRouteImport } from './routes/_authenticated.remove-employee-history'
+import { Route as AuthenticatedRemoveEmployeeRouteImport } from './routes/_authenticated.remove-employee'
 import { Route as AuthenticatedRemovalRequestsRouteImport } from './routes/_authenticated.removal-requests'
 import { Route as AuthenticatedLeaveHistoryRouteImport } from './routes/_authenticated.leave-history'
 import { Route as AuthenticatedLeaveBalanceRequestsRouteImport } from './routes/_authenticated.leave-balance-requests'
+import { Route as AuthenticatedLeaveBalanceHistoryRouteImport } from './routes/_authenticated.leave-balance-history'
 import { Route as AuthenticatedEmployeeRequestsRouteImport } from './routes/_authenticated.employee-requests'
+import { Route as AuthenticatedEmployeeRequestHistoryRouteImport } from './routes/_authenticated.employee-request-history'
 import { Route as AuthenticatedDownloadReportsRouteImport } from './routes/_authenticated.download-reports'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated.dashboard'
 import { Route as AuthenticatedComplaintHistoryRouteImport } from './routes/_authenticated.complaint-history'
@@ -60,6 +64,18 @@ const AuthenticatedSubmitComplaintRoute =
     path: '/submit-complaint',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedRemoveEmployeeHistoryRoute =
+  AuthenticatedRemoveEmployeeHistoryRouteImport.update({
+    id: '/remove-employee-history',
+    path: '/remove-employee-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedRemoveEmployeeRoute =
+  AuthenticatedRemoveEmployeeRouteImport.update({
+    id: '/remove-employee',
+    path: '/remove-employee',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedRemovalRequestsRoute =
   AuthenticatedRemovalRequestsRouteImport.update({
     id: '/removal-requests',
@@ -78,10 +94,22 @@ const AuthenticatedLeaveBalanceRequestsRoute =
     path: '/leave-balance-requests',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedLeaveBalanceHistoryRoute =
+  AuthenticatedLeaveBalanceHistoryRouteImport.update({
+    id: '/leave-balance-history',
+    path: '/leave-balance-history',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedEmployeeRequestsRoute =
   AuthenticatedEmployeeRequestsRouteImport.update({
     id: '/employee-requests',
     path: '/employee-requests',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedEmployeeRequestHistoryRoute =
+  AuthenticatedEmployeeRequestHistoryRouteImport.update({
+    id: '/employee-request-history',
+    path: '/employee-request-history',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedDownloadReportsRoute =
@@ -156,10 +184,14 @@ export interface FileRoutesByFullPath {
   '/complaint-history': typeof AuthenticatedComplaintHistoryRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/download-reports': typeof AuthenticatedDownloadReportsRoute
+  '/employee-request-history': typeof AuthenticatedEmployeeRequestHistoryRoute
   '/employee-requests': typeof AuthenticatedEmployeeRequestsRoute
+  '/leave-balance-history': typeof AuthenticatedLeaveBalanceHistoryRoute
   '/leave-balance-requests': typeof AuthenticatedLeaveBalanceRequestsRoute
   '/leave-history': typeof AuthenticatedLeaveHistoryRoute
   '/removal-requests': typeof AuthenticatedRemovalRequestsRoute
+  '/remove-employee': typeof AuthenticatedRemoveEmployeeRoute
+  '/remove-employee-history': typeof AuthenticatedRemoveEmployeeHistoryRoute
   '/submit-complaint': typeof AuthenticatedSubmitComplaintRoute
   '/weekly-off': typeof AuthenticatedWeeklyOffRoute
 }
@@ -177,10 +209,14 @@ export interface FileRoutesByTo {
   '/complaint-history': typeof AuthenticatedComplaintHistoryRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/download-reports': typeof AuthenticatedDownloadReportsRoute
+  '/employee-request-history': typeof AuthenticatedEmployeeRequestHistoryRoute
   '/employee-requests': typeof AuthenticatedEmployeeRequestsRoute
+  '/leave-balance-history': typeof AuthenticatedLeaveBalanceHistoryRoute
   '/leave-balance-requests': typeof AuthenticatedLeaveBalanceRequestsRoute
   '/leave-history': typeof AuthenticatedLeaveHistoryRoute
   '/removal-requests': typeof AuthenticatedRemovalRequestsRoute
+  '/remove-employee': typeof AuthenticatedRemoveEmployeeRoute
+  '/remove-employee-history': typeof AuthenticatedRemoveEmployeeHistoryRoute
   '/submit-complaint': typeof AuthenticatedSubmitComplaintRoute
   '/weekly-off': typeof AuthenticatedWeeklyOffRoute
 }
@@ -200,10 +236,14 @@ export interface FileRoutesById {
   '/_authenticated/complaint-history': typeof AuthenticatedComplaintHistoryRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/download-reports': typeof AuthenticatedDownloadReportsRoute
+  '/_authenticated/employee-request-history': typeof AuthenticatedEmployeeRequestHistoryRoute
   '/_authenticated/employee-requests': typeof AuthenticatedEmployeeRequestsRoute
+  '/_authenticated/leave-balance-history': typeof AuthenticatedLeaveBalanceHistoryRoute
   '/_authenticated/leave-balance-requests': typeof AuthenticatedLeaveBalanceRequestsRoute
   '/_authenticated/leave-history': typeof AuthenticatedLeaveHistoryRoute
   '/_authenticated/removal-requests': typeof AuthenticatedRemovalRequestsRoute
+  '/_authenticated/remove-employee': typeof AuthenticatedRemoveEmployeeRoute
+  '/_authenticated/remove-employee-history': typeof AuthenticatedRemoveEmployeeHistoryRoute
   '/_authenticated/submit-complaint': typeof AuthenticatedSubmitComplaintRoute
   '/_authenticated/weekly-off': typeof AuthenticatedWeeklyOffRoute
 }
@@ -223,10 +263,14 @@ export interface FileRouteTypes {
     | '/complaint-history'
     | '/dashboard'
     | '/download-reports'
+    | '/employee-request-history'
     | '/employee-requests'
+    | '/leave-balance-history'
     | '/leave-balance-requests'
     | '/leave-history'
     | '/removal-requests'
+    | '/remove-employee'
+    | '/remove-employee-history'
     | '/submit-complaint'
     | '/weekly-off'
   fileRoutesByTo: FileRoutesByTo
@@ -244,10 +288,14 @@ export interface FileRouteTypes {
     | '/complaint-history'
     | '/dashboard'
     | '/download-reports'
+    | '/employee-request-history'
     | '/employee-requests'
+    | '/leave-balance-history'
     | '/leave-balance-requests'
     | '/leave-history'
     | '/removal-requests'
+    | '/remove-employee'
+    | '/remove-employee-history'
     | '/submit-complaint'
     | '/weekly-off'
   id:
@@ -266,10 +314,14 @@ export interface FileRouteTypes {
     | '/_authenticated/complaint-history'
     | '/_authenticated/dashboard'
     | '/_authenticated/download-reports'
+    | '/_authenticated/employee-request-history'
     | '/_authenticated/employee-requests'
+    | '/_authenticated/leave-balance-history'
     | '/_authenticated/leave-balance-requests'
     | '/_authenticated/leave-history'
     | '/_authenticated/removal-requests'
+    | '/_authenticated/remove-employee'
+    | '/_authenticated/remove-employee-history'
     | '/_authenticated/submit-complaint'
     | '/_authenticated/weekly-off'
   fileRoutesById: FileRoutesById
@@ -325,6 +377,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSubmitComplaintRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/remove-employee-history': {
+      id: '/_authenticated/remove-employee-history'
+      path: '/remove-employee-history'
+      fullPath: '/remove-employee-history'
+      preLoaderRoute: typeof AuthenticatedRemoveEmployeeHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/remove-employee': {
+      id: '/_authenticated/remove-employee'
+      path: '/remove-employee'
+      fullPath: '/remove-employee'
+      preLoaderRoute: typeof AuthenticatedRemoveEmployeeRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/removal-requests': {
       id: '/_authenticated/removal-requests'
       path: '/removal-requests'
@@ -346,11 +412,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLeaveBalanceRequestsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/leave-balance-history': {
+      id: '/_authenticated/leave-balance-history'
+      path: '/leave-balance-history'
+      fullPath: '/leave-balance-history'
+      preLoaderRoute: typeof AuthenticatedLeaveBalanceHistoryRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/employee-requests': {
       id: '/_authenticated/employee-requests'
       path: '/employee-requests'
       fullPath: '/employee-requests'
       preLoaderRoute: typeof AuthenticatedEmployeeRequestsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/employee-request-history': {
+      id: '/_authenticated/employee-request-history'
+      path: '/employee-request-history'
+      fullPath: '/employee-request-history'
+      preLoaderRoute: typeof AuthenticatedEmployeeRequestHistoryRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/download-reports': {
@@ -437,10 +517,14 @@ interface AuthenticatedRouteChildren {
   AuthenticatedComplaintHistoryRoute: typeof AuthenticatedComplaintHistoryRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedDownloadReportsRoute: typeof AuthenticatedDownloadReportsRoute
+  AuthenticatedEmployeeRequestHistoryRoute: typeof AuthenticatedEmployeeRequestHistoryRoute
   AuthenticatedEmployeeRequestsRoute: typeof AuthenticatedEmployeeRequestsRoute
+  AuthenticatedLeaveBalanceHistoryRoute: typeof AuthenticatedLeaveBalanceHistoryRoute
   AuthenticatedLeaveBalanceRequestsRoute: typeof AuthenticatedLeaveBalanceRequestsRoute
   AuthenticatedLeaveHistoryRoute: typeof AuthenticatedLeaveHistoryRoute
   AuthenticatedRemovalRequestsRoute: typeof AuthenticatedRemovalRequestsRoute
+  AuthenticatedRemoveEmployeeRoute: typeof AuthenticatedRemoveEmployeeRoute
+  AuthenticatedRemoveEmployeeHistoryRoute: typeof AuthenticatedRemoveEmployeeHistoryRoute
   AuthenticatedSubmitComplaintRoute: typeof AuthenticatedSubmitComplaintRoute
   AuthenticatedWeeklyOffRoute: typeof AuthenticatedWeeklyOffRoute
 }
@@ -456,11 +540,17 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedComplaintHistoryRoute: AuthenticatedComplaintHistoryRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedDownloadReportsRoute: AuthenticatedDownloadReportsRoute,
+  AuthenticatedEmployeeRequestHistoryRoute:
+    AuthenticatedEmployeeRequestHistoryRoute,
   AuthenticatedEmployeeRequestsRoute: AuthenticatedEmployeeRequestsRoute,
+  AuthenticatedLeaveBalanceHistoryRoute: AuthenticatedLeaveBalanceHistoryRoute,
   AuthenticatedLeaveBalanceRequestsRoute:
     AuthenticatedLeaveBalanceRequestsRoute,
   AuthenticatedLeaveHistoryRoute: AuthenticatedLeaveHistoryRoute,
   AuthenticatedRemovalRequestsRoute: AuthenticatedRemovalRequestsRoute,
+  AuthenticatedRemoveEmployeeRoute: AuthenticatedRemoveEmployeeRoute,
+  AuthenticatedRemoveEmployeeHistoryRoute:
+    AuthenticatedRemoveEmployeeHistoryRoute,
   AuthenticatedSubmitComplaintRoute: AuthenticatedSubmitComplaintRoute,
   AuthenticatedWeeklyOffRoute: AuthenticatedWeeklyOffRoute,
 }
