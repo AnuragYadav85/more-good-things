@@ -7,6 +7,8 @@ export const sendOtp = (formData: FormData) =>
   axiosInstance.post("/api/send_otp", formData);
 export const forgotPassword = (formData: FormData) =>
   axiosInstance.post("/api/forgot_password", formData);
+export const changePassword = (formData: FormData) =>
+  axiosInstance.post("/api/change_password", formData);
 
 /* DASHBOARD */
 export const getDashboard = () => axiosInstance.get("/api/dashboard");
