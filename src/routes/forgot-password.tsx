@@ -27,8 +27,6 @@ function ForgotPasswordPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [otpSent, setOtpSent] = useState(false);
-
   const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
   const showApiError = (err: any, fallback: string) => {
@@ -56,7 +54,6 @@ function ForgotPasswordPage() {
         toast.error(data.message || "Failed to send OTP");
       } else {
         toast.success(data.message || "OTP sent");
-        setOtpSent(true);
         setStep(2);
       }
     } catch (err: any) {
@@ -94,7 +91,6 @@ function ForgotPasswordPage() {
         setOtp("");
         setNewPassword("");
         setConfirmPassword("");
-        setOtpSent(false);
         navigate({ to: data.redirect || "/login" });
       }
     } catch (err: any) {
