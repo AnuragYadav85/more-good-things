@@ -31,55 +31,73 @@ const COMMON_TOP: NavItem[] = [
 const SELF_SERVICE: NavItem[] = [
   { name: "Apply Leave", path: "/apply-leave", icon: HiOutlineCalendar },
   { name: "Leave History", path: "/leave-history", icon: HiOutlineClipboardList },
+  { name: "Attendance History", path: "/attendance-history", icon: HiOutlineClock },
   { name: "Submit Complaint", path: "/submit-complaint", icon: HiOutlineChatAlt2 },
   { name: "Complaint History", path: "/complaint-history", icon: HiOutlineDocumentText },
 ];
 const APPROVALS: NavItem[] = [
-  { name: "Approve Leave", path: "/approve-leave", icon: HiOutlineCheckCircle },
-  { name: "Complaint Actions", path: "/action-complaints", icon: HiOutlineChatAlt2 },
+  { name: "Pending Leave Requests", path: "/approve-leave", icon: HiOutlineCheckCircle },
+  { name: "Pending Complaints", path: "/action-complaints", icon: HiOutlineChatAlt2 },
 ];
 const HR_TOOLS: NavItem[] = [
-  { name: "Add Employee", path: "/add-employee", icon: HiOutlineUserAdd },
-  { name: "Add Leave Balance", path: "/add-leave-balance", icon: HiOutlineScale },
-  { name: "Add Holiday", path: "/add-holiday", icon: HiOutlineSun },
-  { name: "Weekly Off", path: "/weekly-off", icon: HiOutlineClock },
+  { name: "Add Employee Request", path: "/add-employee", icon: HiOutlineUserAdd },
+  { name: "Add Employee History", path: "/employee-request-history", icon: HiOutlineUsers },
+  { name: "Add Leave Balance Request", path: "/add-leave-balance", icon: HiOutlineScale },
+  { name: "Leave Balance History", path: "/leave-balance-history", icon: HiOutlineScale },
+  { name: "Holiday Management", path: "/add-holiday", icon: HiOutlineSun },
 ];
 const HEADHR_TOOLS: NavItem[] = [
-  { name: "Employee Requests", path: "/employee-requests", icon: HiOutlineUsers },
-  { name: "Leave Balance Requests", path: "/leave-balance-requests", icon: HiOutlineScale },
+  { name: "Pending Employee Requests", path: "/employee-requests", icon: HiOutlineUsers },
+  { name: "Pending Leave Balance Requests", path: "/leave-balance-requests", icon: HiOutlineScale },
+  { name: "Weekly Off Management", path: "/weekly-off", icon: HiOutlineClock },
+  { name: "Remove Employee Request", path: "/remove-employee", icon: HiOutlineUserRemove },
+  { name: "Remove Employee History", path: "/remove-employee-history", icon: HiOutlineUserRemove },
 ];
 const DIRECTOR_TOOLS: NavItem[] = [
-  { name: "Removal Requests", path: "/removal-requests", icon: HiOutlineUserRemove },
-  { name: "Download Reports", path: "/download-reports", icon: HiOutlineDownload },
+  { name: "Pending Remove Employee Requests", path: "/removal-requests", icon: HiOutlineUserRemove },
+];
+const SELF_REPORT: NavItem[] = [
+  { name: "Download My Report", path: "/download-reports", icon: HiOutlineDownload },
+];
+const ALL_REPORTS: NavItem[] = [
+  { name: "Download All Reports", path: "/download-reports", icon: HiOutlineDownload },
 ];
 
 const SECTIONS_BY_ROLE: Record<string, NavSection[]> = {
   Employee: [
     { label: "Overview", items: COMMON_TOP },
     { label: "Self Service", items: SELF_SERVICE },
+    { label: "Reports", items: SELF_REPORT },
   ],
   Admin: [
     { label: "Overview", items: COMMON_TOP },
     { label: "Self Service", items: SELF_SERVICE },
     { label: "Approvals", items: APPROVALS },
+    { label: "Reports", items: SELF_REPORT },
   ],
   HR: [
     { label: "Overview", items: COMMON_TOP },
     { label: "Self Service", items: SELF_SERVICE },
     { label: "Approvals", items: APPROVALS },
     { label: "HR", items: HR_TOOLS },
+    { label: "Reports", items: SELF_REPORT },
   ],
   HeadHR: [
     { label: "Overview", items: COMMON_TOP },
     { label: "Self Service", items: SELF_SERVICE },
     { label: "Approvals", items: APPROVALS },
+    { label: "HR", items: HR_TOOLS },
     { label: "Head HR", items: HEADHR_TOOLS },
+    { label: "Reports", items: [...SELF_REPORT, ...ALL_REPORTS] },
   ],
   Director: [
     { label: "Overview", items: COMMON_TOP },
     { label: "Self Service", items: SELF_SERVICE },
     { label: "Approvals", items: APPROVALS },
+    { label: "HR", items: HR_TOOLS },
+    { label: "Head HR", items: HEADHR_TOOLS },
     { label: "Director", items: DIRECTOR_TOOLS },
+    { label: "Reports", items: [...SELF_REPORT, ...ALL_REPORTS] },
   ],
 };
 
