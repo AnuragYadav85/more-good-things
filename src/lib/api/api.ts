@@ -15,7 +15,7 @@ export const getDashboard = () => axiosInstance.get("/api/dashboard");
 
 /* LEAVE */
 export const applyLeave = (formData: FormData) =>
-  axiosInstance.post("/api/applyleave", formData, {
+  axiosInstance.post("/api/apply_leave", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
 export const getLeaveHistory = () => axiosInstance.get("/api/leave-history");
