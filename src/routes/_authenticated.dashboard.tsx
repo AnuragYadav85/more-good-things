@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -21,7 +21,8 @@ export const Route = createFileRoute("/_authenticated/dashboard")({
 const COLORS = ["#0d6efd", "#198754", "#ffc107", "#dc3545", "#6f42c1", "#0dcaf0", "#6c757d"];
 
 function DashboardPage() {
-  const { user: authUser } = useAuth();
+  const { user: authUser, logout } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<any>(null);
 
@@ -29,12 +30,23 @@ function DashboardPage() {
     let mounted = true;
     getDashboard()
       .then((res) => mounted && setData(res.data))
-      .catch(() => mounted && toast.error("Failed to load dashboard"))
+      .catch((err: any) => {
+        if (!mounted) return;
+        const status = err?.response?.status;
+        if (status === 401 || status === 403) {
+          logout();
+          navigate({ to: "/login", replace: true });
+          return;
+        }
+        toast.error(
+          err?.response?.data?.message || "Failed to load dashboard"
+        );
+      })
       .finally(() => mounted && setLoading(false));
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [logout, navigate]);
 
   if (loading) return <LoadingSpinner text="Loading dashboard..." />;
 
