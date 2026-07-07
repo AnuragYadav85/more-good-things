@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import { useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { applyLeave } from "@/lib/api/api";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/apply-leave")({
   head: () => ({ meta: [{ title: "Apply Leave — LMS" }] }),
@@ -12,13 +12,16 @@ export const Route = createFileRoute("/_authenticated/apply-leave")({
 function ApplyLeavePage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
+  const { logout } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const initialForm = {
     leave_type: "",
     apply_start_date: "",
     apply_end_date: "",
     reason: "",
     supporting_documents: null as File | null,
-  });
+  };
+  const [formData, setFormData] = useState(initialForm);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -28,10 +31,20 @@ function ApplyLeavePage() {
     setFormData((p) => ({ ...p, supporting_documents: e.target.files?.[0] || null }));
   };
 
+  const handleClearForm = () => {
+    setFormData(initialForm);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (loading) return;
     if (!formData.leave_type || !formData.apply_start_date || !formData.apply_end_date || !formData.reason) {
       toast.error("Please fill all required fields");
+      return;
+    }
+    if (formData.apply_end_date < formData.apply_start_date) {
+      toast.error("End Date cannot be earlier than Start Date");
       return;
     }
     setLoading(true);
@@ -43,15 +56,23 @@ function ApplyLeavePage() {
       fd.append("reason", formData.reason);
       if (formData.supporting_documents) fd.append("supporting_documents", formData.supporting_documents);
       const res = await applyLeave(fd);
-
-      await navigate({
-        to: "/leave-history",
-        search: {
-          message: res?.data?.message,
-        },
-      });
+      if (res?.data?.message) toast.success(res.data.message);
+      handleClearForm();
+      const redirect = res?.data?.redirect || "/leave-history";
+      await navigate({ to: redirect });
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to apply leave");
+      const status = err?.response?.status;
+      if (status === 401 || status === 403) {
+        logout();
+        navigate({ to: "/login", replace: true });
+        return;
+      }
+      toast.error(
+        err?.response?.data?.message ||
+          (err?.response
+            ? "Failed to apply leave"
+            : "Unable to connect to server. Please try again.")
+      );
     } finally {
       setLoading(false);
     }
@@ -92,11 +113,21 @@ function ApplyLeavePage() {
           </div>
           <div className="form-group">
             <label>Supporting Document</label>
-            <input type="file" onChange={handleFile} />
+            <input type="file" ref={fileInputRef} onChange={handleFile} />
           </div>
-          <button type="submit" className="primary-btn" disabled={loading}>
-            {loading ? "Submitting..." : "Apply Leave"}
-          </button>
+          <div className="form-actions">
+            <button type="submit" className="primary-btn" disabled={loading}>
+              {loading ? "Submitting..." : "Apply Leave"}
+            </button>
+            <button
+              type="button"
+              className="secondary-btn"
+              onClick={handleClearForm}
+              disabled={loading}
+            >
+              Clear Form
+            </button>
+          </div>
         </form>
       </div>
     </div>
