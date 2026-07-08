@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getPendingLeaves, leaveAction } from "@/lib/api/api";
+import { useAuth } from "@/lib/auth-context";
 import LoadingSpinner from "@/components/lms/LoadingSpinner";
 import PageHeader from "@/components/lms/PageHeader";
 
@@ -11,6 +12,10 @@ export const Route = createFileRoute("/_authenticated/approve-leave")({
 });
 
 function ApproveLeavePage() {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const role = user?.designation;
+  const authorized = role === "Admin" || role === "HR";
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedLeave, setSelectedLeave] = useState<any | null>(null);
@@ -18,17 +23,34 @@ function ApproveLeavePage() {
   const [rejectReason, setRejectReason] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  const handleAuthError = (status?: number) => {
+    if (status === 401 || status === 403) {
+      logout();
+      navigate({ to: "/login", replace: true });
+      return true;
+    }
+    return false;
+  };
+
   const loadPending = (showError = true) => {
     return getPendingLeaves()
-      .then((res) => setRows(res.data || []))
+      .then((res) => setRows(Array.isArray(res.data) ? res.data : res.data?.data || []))
       .catch((err) => {
-        if (showError) toast.error(err?.response?.data?.message || "Failed to load leave requests");
+        if (handleAuthError(err?.response?.status)) return;
+        if (showError)
+          toast.error(
+            err?.response?.data?.message ||
+              (err?.response
+                ? "Failed to load leave requests"
+                : "Unable to connect to server. Please try again.")
+          );
       });
   };
 
   useEffect(() => {
+    if (!authorized) return;
     loadPending().finally(() => setLoading(false));
-  }, []);
+  }, [authorized]);
 
   const handleView = (l: any) => {
     setSelectedLeave(l);
@@ -38,14 +60,22 @@ function ApproveLeavePage() {
 
   const handleApprove = async () => {
     if (!selectedLeave) return;
+    if (submitting) return;
+    if (!window.confirm("Are you sure you want to approve this leave request?")) return;
     setSubmitting(true);
     try {
-      const res = await leaveAction(selectedLeave.leave_id, "approve_leave");
-      toast.success(res.data?.message || "Leave approved");
+      const fd = new FormData();
+      fd.append("action_type", "Approve");
+      const res = await leaveAction(selectedLeave.leave_id, fd);
+      if (res.data?.message) toast.success(res.data.message);
       setSelectedLeave(null);
       await loadPending(false);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Action failed");
+      if (handleAuthError(err?.response?.status)) return;
+      toast.error(
+        err?.response?.data?.message ||
+          (err?.response ? "Action failed" : "Unable to connect to server. Please try again.")
+      );
     } finally {
       setSubmitting(false);
     }
@@ -53,6 +83,7 @@ function ApproveLeavePage() {
 
   const handleReject = async () => {
     if (!selectedLeave) return;
+    if (submitting) return;
     if (!showRejectReason) {
       setShowRejectReason(true);
       return;
@@ -61,18 +92,24 @@ function ApproveLeavePage() {
       toast.error("Please enter a rejection reason");
       return;
     }
+    if (!window.confirm("Are you sure you want to reject this leave request?")) return;
     setSubmitting(true);
     try {
       const fd = new FormData();
+      fd.append("action_type", "Reject");
       fd.append("reason", rejectReason.trim());
-      const res = await leaveAction(selectedLeave.leave_id, "reject_leave", fd);
-      toast.success(res.data?.message || "Leave rejected");
+      const res = await leaveAction(selectedLeave.leave_id, fd);
+      if (res.data?.message) toast.success(res.data.message);
       setSelectedLeave(null);
       setShowRejectReason(false);
       setRejectReason("");
       await loadPending(false);
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Action failed");
+      if (handleAuthError(err?.response?.status)) return;
+      toast.error(
+        err?.response?.data?.message ||
+          (err?.response ? "Action failed" : "Unable to connect to server. Please try again.")
+      );
     } finally {
       setSubmitting(false);
     }
@@ -84,6 +121,16 @@ function ApproveLeavePage() {
     const name = l?.attachment_name || l?.file_name || String(url).split("/").pop();
     return { name, url };
   };
+
+  if (!authorized) {
+    return (
+      <div className="table-page">
+        <div className="table-card">
+          <PageHeader title="Unauthorized" description="You do not have permission to view this page." />
+        </div>
+      </div>
+    );
+  }
 
   if (loading) return <LoadingSpinner text="Loading pending leave requests..." />;
 
@@ -100,6 +147,10 @@ function ApproveLeavePage() {
               <div><div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>Start Date</div><div>{selectedLeave.start_date}</div></div>
               <div><div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>End Date</div><div>{selectedLeave.end_date}</div></div>
               <div><div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>Applied On</div><div>{selectedLeave.applied_on}</div></div>
+              <div><div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>Current Status</div><div>{selectedLeave.status || "Pending"}</div></div>
+              {(selectedLeave.duration || selectedLeave.leave_duration) && (
+                <div><div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>Duration</div><div>{selectedLeave.duration || selectedLeave.leave_duration}</div></div>
+              )}
               {selectedLeave.reason && (
                 <div style={{ gridColumn: "1 / -1" }}>
                   <div style={{ fontSize: "0.75rem", color: "var(--color-text-muted)" }}>Reason</div>
@@ -167,20 +218,27 @@ function ApproveLeavePage() {
                 <th>Start</th>
                 <th>End</th>
                 <th>Applied On</th>
+                <th>Status</th>
+                <th>Approved By</th>
                 <th>View</th>
               </tr>
             </thead>
             <tbody>
               {rows.length === 0 ? (
-                <tr><td colSpan={7} style={{ textAlign: "center", padding: "1.25rem", color: "var(--color-text-muted)" }}>No pending leave requests</td></tr>
+                <tr><td colSpan={9} style={{ textAlign: "center", padding: "1.25rem", color: "var(--color-text-muted)" }}>No pending leave requests</td></tr>
               ) : rows.map((l) => (
-                <tr key={l.leave_id}>
+                <tr
+                  key={l.leave_id}
+                  style={selectedLeave?.leave_id === l.leave_id ? { background: "var(--color-selected, rgba(0,0,0,0.05))" } : undefined}
+                >
                   <td>{l.leave_id}</td>
                   <td>{l.employee}</td>
                   <td>{l.leave_type}</td>
                   <td>{l.start_date}</td>
                   <td>{l.end_date}</td>
                   <td>{l.applied_on}</td>
+                  <td>{l.status || "Pending"}</td>
+                  <td>{l.approved_by || "-"}</td>
                   <td>
                     <div className="action-buttons">
                       <button className="approve-btn" onClick={() => handleView(l)}>View</button>
