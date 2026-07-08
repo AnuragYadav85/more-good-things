@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useSearch } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, useSearch } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getLeaveHistory, cancelLeave } from "@/lib/api/api";
+import { useAuth } from "@/lib/auth-context";
 import LoadingSpinner from "@/components/lms/LoadingSpinner";
 import PageHeader from "@/components/lms/PageHeader";
 import StatusBadge from "@/components/lms/StatusBadge";
@@ -21,8 +21,11 @@ export const Route = createFileRoute("/_authenticated/leave-history")({
 
 function LeaveHistoryPage() {
   const search = useSearch({ from: "/_authenticated/leave-history", });
+  const navigate = useNavigate();
+  const { logout } = useAuth();
   const [rows, setRows] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cancellingId, setCancellingId] = useState<number | string | null>(null);
 
   useEffect(() => {
     if (search.message) {
@@ -30,36 +33,50 @@ function LeaveHistoryPage() {
     }
   }, [search.message]);
 
+  const handleAuthError = (status?: number) => {
+    if (status === 401 || status === 403) {
+      logout();
+      navigate({ to: "/login", replace: true });
+      return true;
+    }
+    return false;
+  };
+
   const fetchLeaveHistory = async () => {
     try {
       const res = await getLeaveHistory();
-
-      setRows(res.data || []);
+      setRows(Array.isArray(res.data) ? res.data : res.data?.data || []);
     } catch (err: any) {
+      if (handleAuthError(err?.response?.status)) return;
       toast.error(
         err?.response?.data?.message ||
-        "Failed to load leave history"
+          (err?.response
+            ? "Failed to load leave history"
+            : "Unable to connect to server. Please try again.")
       );
     } finally {
       setLoading(false);
     }
   };
 
-  const handleCancelLeave = async (
-    leaveId: number | string
-  ) => {
+  const handleCancelLeave = async (leaveId: number | string) => {
+    if (cancellingId !== null) return;
+    if (!window.confirm("Are you sure you want to cancel this leave request?")) return;
+    setCancellingId(leaveId);
     try {
       const res = await cancelLeave(leaveId);
-
-      toast.success(
-        res?.data?.message
-      );
-
+      if (res?.data?.message) toast.success(res.data.message);
       await fetchLeaveHistory();
     } catch (err: any) {
+      if (handleAuthError(err?.response?.status)) return;
       toast.error(
-        err?.response?.data?.message
+        err?.response?.data?.message ||
+          (err?.response
+            ? "Failed to cancel leave"
+            : "Unable to connect to server. Please try again.")
       );
+    } finally {
+      setCancellingId(null);
     }
   };
 
@@ -120,13 +137,10 @@ function LeaveHistoryPage() {
                   <td>
                     {canCancelLeave(leave) ? (
                       <button
-                        onClick={() =>
-                          handleCancelLeave(
-                            leave.leave_id
-                          )
-                        }
+                        onClick={() => handleCancelLeave(leave.leave_id)}
+                        disabled={cancellingId === leave.leave_id}
                       >
-                        Cancel
+                        {cancellingId === leave.leave_id ? "Cancelling..." : "Cancel"}
                       </button>
                     ) : (
                       "-"
