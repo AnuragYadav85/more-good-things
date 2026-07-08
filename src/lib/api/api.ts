@@ -36,9 +36,9 @@ export const cancelComplaint = (complaintId: string | number) =>
 
 /* ADMIN */
 export const getPendingLeaves = () =>
-  axiosInstance.get("/api/pending-leaves");
-export const leaveAction = (leaveId: string | number, action: string, formData?: FormData,) =>
-  axiosInstance.post(`/api/action_leave/${leaveId}/${action}`, formData);
+  axiosInstance.get("/api/pending_leaves_requests");
+export const leaveAction = (leaveId: string | number, formData: FormData) =>
+  axiosInstance.post(`/api/action_leave/${leaveId}`, formData);
 export const getPendingComplaints = () =>
   axiosInstance.get("/api/action-complaints");
 export const complaintAction = (complaintId: string | number, action: string, formData: FormData,) =>
