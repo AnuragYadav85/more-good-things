@@ -18,7 +18,7 @@ export const applyLeave = (formData: FormData) =>
   axiosInstance.post("/api/apply_leave", formData, {
     headers: { "Content-Type": "multipart/form-data" },
   });
-export const getLeaveHistory = () => axiosInstance.get("/api/leave-history");
+export const getLeaveHistory = () => axiosInstance.get("/api/leave_history");
 export const cancelLeave = (leaveId: string | number) =>
   axiosInstance.post(`/api/cancel_leave_action/${leaveId}`);
 
