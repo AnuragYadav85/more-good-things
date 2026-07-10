@@ -7,7 +7,6 @@ import LoadingSpinner from "@/components/lms/LoadingSpinner";
 import PageHeader from "@/components/lms/PageHeader";
 import StatusBadge from "@/components/lms/StatusBadge";
 
-
 export const Route = createFileRoute("/_authenticated/attendance-history")({
   head: () => ({ meta: [{ title: "Attendance History — LMS" }] }),
   component: AttendanceHistoryPage,
