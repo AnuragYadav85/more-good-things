@@ -31,32 +31,29 @@ function AttendanceHistoryPage() {
     return false;
   };
 
-  const fetchAttendance = async (selectedWeek: number) => {
-    let cancelled = false;
-    setLoading(true);
-    try {
-      const res = await getAttendanceHistory(selectedWeek);
-      if (cancelled) return;
-      setRows(res.data?.data || []);
-      setWeekStart(res.data?.week_start || "");
-      setWeekEnd(res.data?.week_end || "");
-    } catch (err: any) {
-      if (cancelled) return;
-      if (handleAuthError(err?.response?.status)) return;
-      toast.error(
-        err?.response?.data?.message ||
-          (err?.response
-            ? "Failed to load attendance history"
-            : "Unable to connect to server. Please try again."),
-      );
-    } finally {
-      if (!cancelled) setLoading(false);
-    }
-  };
-
   useEffect(() => {
     let cancelled = false;
-    fetchAttendance(week);
+    setLoading(true);
+    getAttendanceHistory(week)
+      .then((res) => {
+        if (cancelled) return;
+        setRows(res.data?.data || []);
+        setWeekStart(res.data?.week_start || "");
+        setWeekEnd(res.data?.week_end || "");
+      })
+      .catch((err: any) => {
+        if (cancelled) return;
+        if (handleAuthError(err?.response?.status)) return;
+        toast.error(
+          err?.response?.data?.message ||
+            (err?.response
+              ? "Failed to load attendance history"
+              : "Unable to connect to server. Please try again."),
+        );
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -66,6 +63,7 @@ function AttendanceHistoryPage() {
   const handleNext = () => {
     if (week > 0) setWeek((prev) => prev - 1);
   };
+
 
 
   if (loading) return <LoadingSpinner text="Loading attendance history..." />;
