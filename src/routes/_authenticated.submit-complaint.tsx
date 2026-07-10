@@ -12,50 +12,26 @@ export const Route = createFileRoute("/_authenticated/submit-complaint")({
 function SubmitComplaintPage() {
   const initialForm = { complaint_type: "", description: "" };
   const [formData, setFormData] = useState({ ...initialForm });
-  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { logout } = useAuth();
 
-  const handleAuthError = (status?: number) => {
-    if (status === 401 || status === 403) {
-      logout();
-      navigate({ to: "/login", replace: true });
-      return true;
-    }
-    return false;
-  };
-
-  const validate = () => {
-    const nextErrors: Record<string, string> = {};
-    if (!formData.complaint_type.trim()) {
-      nextErrors.complaint_type = "Please select a complaint type.";
-    }
-    if (!formData.description.trim()) {
-      nextErrors.description = "Description cannot be empty or only spaces.";
-    }
-    setErrors(nextErrors);
-    return Object.keys(nextErrors).length === 0;
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((p) => ({ ...p, [name]: value }));
-    if (errors[name]) {
-      setErrors((p) => ({ ...p, [name]: "" }));
-    }
   };
 
   const handleClearForm = () => {
     setFormData({ ...initialForm });
-    setErrors({});
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
-    if (!validate()) return;
-
+    if (!formData.complaint_type.trim() || !formData.description.trim()) {
+      toast.error("Please fill all required fields");
+      return;
+    }
     setLoading(true);
     try {
       const fd = new FormData();
@@ -66,7 +42,12 @@ function SubmitComplaintPage() {
       handleClearForm();
       await navigate({ to: res?.data?.redirect || "/complaint-history" });
     } catch (err: any) {
-      if (handleAuthError(err?.response?.status)) return;
+      const status = err?.response?.status;
+      if (status === 401 || status === 403) {
+        logout();
+        navigate({ to: "/login", replace: true });
+        return;
+      }
       toast.error(
         err?.response?.data?.message ||
           (err?.response ? "Failed to submit complaint" : "Unable to connect to server. Please try again."),
@@ -91,14 +72,12 @@ function SubmitComplaintPage() {
               <option value="System">System</option>
               <option value="Other">Other</option>
             </select>
-            {errors.complaint_type && <span className="error-text">{errors.complaint_type}</span>}
           </div>
           <div className="form-group">
             <label>Description *</label>
             <textarea rows={6} name="description" placeholder="Describe your complaint..." value={formData.description} onChange={handleChange} />
-            {errors.description && <span className="error-text">{errors.description}</span>}
           </div>
-          <div className="form-actions" style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+          <div className="form-actions">
             <button type="submit" className="primary-btn" disabled={loading}>
               {loading ? "Submitting..." : "Submit Complaint"}
             </button>
