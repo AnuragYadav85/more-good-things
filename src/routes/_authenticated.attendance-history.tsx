@@ -19,25 +19,44 @@ function AttendanceHistoryPage() {
   const [weekStart, setWeekStart] = useState<string>("");
   const [weekEnd, setWeekEnd] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAuthError = (status?: number) => {
+    if (status === 401 || status === 403) {
+      logout();
+      navigate({ to: "/login", replace: true });
+      return true;
+    }
+    return false;
+  };
+
+  const fetchAttendance = async (selectedWeek: number) => {
+    let cancelled = false;
+    setLoading(true);
+    try {
+      const res = await getAttendanceHistory(selectedWeek);
+      if (cancelled) return;
+      setRows(res.data?.data || []);
+      setWeekStart(res.data?.week_start || "");
+      setWeekEnd(res.data?.week_end || "");
+    } catch (err: any) {
+      if (cancelled) return;
+      if (handleAuthError(err?.response?.status)) return;
+      toast.error(
+        err?.response?.data?.message ||
+          (err?.response
+            ? "Failed to load attendance history"
+            : "Unable to connect to server. Please try again."),
+      );
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
-    setLoading(true);
-    getAttendanceHistory(week)
-      .then((res) => {
-        if (cancelled) return;
-        setRows(res.data?.data || []);
-        setWeekStart(res.data?.week_start || "");
-        setWeekEnd(res.data?.week_end || "");
-      })
-      .catch((err) =>
-        toast.error(
-          err?.response?.data?.message || "Failed to load attendance history",
-        ),
-      )
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+    fetchAttendance(week);
     return () => {
       cancelled = true;
     };
@@ -47,6 +66,7 @@ function AttendanceHistoryPage() {
   const handleNext = () => {
     if (week > 0) setWeek((prev) => prev - 1);
   };
+
 
   if (loading) return <LoadingSpinner text="Loading attendance history..." />;
 
