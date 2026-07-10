@@ -63,8 +63,6 @@ function AttendanceHistoryPage() {
     if (week > 0) setWeek((prev) => prev - 1);
   };
 
-
-
   if (loading) return <LoadingSpinner text="Loading attendance history..." />;
 
   return (
