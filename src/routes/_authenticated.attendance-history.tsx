@@ -1,7 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getAttendanceHistory } from "@/lib/api/api";
+import { useAuth } from "@/lib/auth-context";
 import LoadingSpinner from "@/components/lms/LoadingSpinner";
 import PageHeader from "@/components/lms/PageHeader";
 import StatusBadge from "@/components/lms/StatusBadge";
@@ -17,6 +18,17 @@ function AttendanceHistoryPage() {
   const [weekStart, setWeekStart] = useState<string>("");
   const [weekEnd, setWeekEnd] = useState<string>("");
   const [loading, setLoading] = useState(true);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleAuthError = (status?: number) => {
+    if (status === 401 || status === 403) {
+      logout();
+      navigate({ to: "/login", replace: true });
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -28,11 +40,16 @@ function AttendanceHistoryPage() {
         setWeekStart(res.data?.week_start || "");
         setWeekEnd(res.data?.week_end || "");
       })
-      .catch((err) =>
+      .catch((err: any) => {
+        if (cancelled) return;
+        if (handleAuthError(err?.response?.status)) return;
         toast.error(
-          err?.response?.data?.message || "Failed to load attendance history",
-        ),
-      )
+          err?.response?.data?.message ||
+            (err?.response
+              ? "Failed to load attendance history"
+              : "Unable to connect to server. Please try again."),
+        );
+      })
       .finally(() => {
         if (!cancelled) setLoading(false);
       });

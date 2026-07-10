@@ -24,7 +24,7 @@ export const cancelLeave = (leaveId: string | number) =>
 
 /* ATTENDANCE */
 export const getAttendanceHistory = (week: number = 0) =>
-  axiosInstance.get(`/api/attendance-history?week=${week}`);
+  axiosInstance.get(`/api/attendance_history?week=${week}`);
 
 /* COMPLAINTS */
 export const submitComplaint = (formData: FormData) =>
