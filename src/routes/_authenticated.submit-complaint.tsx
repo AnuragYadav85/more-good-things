@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { submitComplaint } from "@/lib/api/api";
-import { useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/submit-complaint")({
   head: () => ({ meta: [{ title: "Submit Complaint — LMS" }] }),
