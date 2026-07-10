@@ -1,10 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { getAttendanceHistory } from "@/lib/api/api";
+import { useAuth } from "@/lib/auth-context";
 import LoadingSpinner from "@/components/lms/LoadingSpinner";
 import PageHeader from "@/components/lms/PageHeader";
 import StatusBadge from "@/components/lms/StatusBadge";
+
 
 export const Route = createFileRoute("/_authenticated/attendance-history")({
   head: () => ({ meta: [{ title: "Attendance History — LMS" }] }),
