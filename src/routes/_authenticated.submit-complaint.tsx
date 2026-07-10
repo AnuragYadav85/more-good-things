@@ -1,8 +1,8 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { submitComplaint } from "@/lib/api/api";
-import { useNavigate } from "@tanstack/react-router";
+import { useAuth } from "@/lib/auth-context";
 
 export const Route = createFileRoute("/_authenticated/submit-complaint")({
   head: () => ({ meta: [{ title: "Submit Complaint — LMS" }] }),
@@ -10,33 +10,48 @@ export const Route = createFileRoute("/_authenticated/submit-complaint")({
 });
 
 function SubmitComplaintPage() {
-  const [formData, setFormData] = useState({ complaint_type: "", description: "" });
+  const initialForm = { complaint_type: "", description: "" };
+  const [formData, setFormData] = useState({ ...initialForm });
   const [loading, setLoading] = useState(false);
-  
   const navigate = useNavigate();
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
-    setFormData((p) => ({ ...p, [e.target.name]: e.target.value }));
+  const { logout } = useAuth();
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setFormData((p) => ({ ...p, [name]: value }));
+  };
+
+  const handleClearForm = () => {
+    setFormData({ ...initialForm });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.complaint_type || !formData.description) {
-      toast.error("Please fill all fields");
+    if (loading) return;
+    if (!formData.complaint_type.trim() || !formData.description.trim()) {
+      toast.error("Please fill all required fields");
       return;
     }
     setLoading(true);
     try {
       const fd = new FormData();
-      fd.append("complaint_type", formData.complaint_type);
-      fd.append("description", formData.description);
+      fd.append("complaint_type", formData.complaint_type.trim());
+      fd.append("description", formData.description.trim());
       const res = await submitComplaint(fd);
-      await navigate({
-        to: "/complaint-history",
-        search: {
-          message: res?.data?.message,
-        },
-      });
+      if (res?.data?.message) toast.success(res.data.message);
+      handleClearForm();
+      await navigate({ to: res?.data?.redirect || "/complaint-history" });
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to submit complaint");
+      const status = err?.response?.status;
+      if (status === 401 || status === 403) {
+        logout();
+        navigate({ to: "/login", replace: true });
+        return;
+      }
+      toast.error(
+        err?.response?.data?.message ||
+          (err?.response ? "Failed to submit complaint" : "Unable to connect to server. Please try again."),
+      );
     } finally {
       setLoading(false);
     }
@@ -62,9 +77,14 @@ function SubmitComplaintPage() {
             <label>Description *</label>
             <textarea rows={6} name="description" placeholder="Describe your complaint..." value={formData.description} onChange={handleChange} />
           </div>
-          <button type="submit" className="primary-btn" disabled={loading}>
-            {loading ? "Submitting..." : "Submit Complaint"}
-          </button>
+          <div className="form-actions">
+            <button type="submit" className="primary-btn" disabled={loading}>
+              {loading ? "Submitting..." : "Submit Complaint"}
+            </button>
+            <button type="button" className="secondary-btn" onClick={handleClearForm} disabled={loading}>
+              Clear Form
+            </button>
+          </div>
         </form>
       </div>
     </div>
