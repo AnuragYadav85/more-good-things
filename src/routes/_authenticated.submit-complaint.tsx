@@ -64,10 +64,7 @@ function SubmitComplaintPage() {
       const res = await submitComplaint(fd);
       if (res?.data?.message) toast.success(res.data.message);
       handleClearForm();
-      await navigate({
-        to: res?.data?.redirect || "/complaint-history",
-        search: { message: res?.data?.message },
-      });
+      await navigate({ to: res?.data?.redirect || "/complaint-history" });
     } catch (err: any) {
       if (handleAuthError(err?.response?.status)) return;
       toast.error(
